@@ -6,8 +6,8 @@ const cells = Array.from(document.getElementsByClassName('cell'));
 const messageDiv = document.getElementById('message');
 
 document.getElementById('submit').addEventListener('click', () => {
-  const p1 = document.getElementById('player-1').value.trim();
-  const p2 = document.getElementById('player-2').value.trim();
+  const p1 = document.getElementById('player1').value.trim();
+  const p2 = document.getElementById('player2').value.trim();
 
   if (!p1 || !p2) {
     alert('Please enter names for both players.');

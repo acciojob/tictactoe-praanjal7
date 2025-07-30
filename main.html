@@ -8,23 +8,19 @@
 <body>
 
   <div class="container">
-    <!-- Player Name Input Section -->
+    <!-- Player input section -->
     <div id="input-section">
       <h2>Enter Player Names</h2>
-		<!-- Change these lines: -->
-<input type="text" id="player1" placeholder="Player 1 name" />
-<input type="text" id="player2" placeholder="Player 2 name" />
-
-      
+      <input type="text" id="player1" placeholder="Player 1 name" />
+      <input type="text" id="player2" placeholder="Player 2 name" />
       <button id="submit">Start Game</button>
     </div>
 
-    <!-- Game Section -->
-    <div id="game-section" style="display:none;">
+    <!-- Game board section -->
+    <div id="game-section" style="display: none;">
       <h1>Tic Tac Toe</h1>
-      <div class="message" id="message"></div>
+      <div class="message"></div>
       <div class="board" id="board">
-        <!-- 9 cells -->
         <div class="cell" id="1"></div>
         <div class="cell" id="2"></div>
         <div class="cell" id="3"></div>

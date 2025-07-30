@@ -1,25 +1,24 @@
-let currentPlayer = 'X';
+let currentPlayer = 'x';
 let players = {};
 let gameActive = true;
-
-const cells = Array.from(document.getElementsByClassName('cell'));
-const messageDiv = document.getElementById('message');
 
 document.getElementById('submit').addEventListener('click', () => {
   const p1 = document.getElementById('player1').value.trim();
   const p2 = document.getElementById('player2').value.trim();
 
   if (!p1 || !p2) {
-    alert('Please enter names for both players.');
+    alert('Please enter both player names!');
     return;
   }
 
-  players = { X: p1, O: p2 };
-
+  players = { x: p1, o: p2 };
   document.getElementById('input-section').style.display = 'none';
   document.getElementById('game-section').style.display = 'block';
-  messageDiv.textContent = `${players[currentPlayer]}, you're up`;
+
+  document.querySelector('.message').textContent = `${players[currentPlayer]}, you're up`;
 });
+
+const cells = document.querySelectorAll('.cell');
 
 cells.forEach(cell => {
   cell.addEventListener('click', () => {
@@ -27,40 +26,40 @@ cells.forEach(cell => {
 
     cell.textContent = currentPlayer;
 
-    if (checkWin()) {
-      messageDiv.textContent = `${players[currentPlayer]}, congratulations you won!`;
+    if (checkWinner()) {
+      document.querySelector('.message').textContent = `${players[currentPlayer]}, congratulations you won!`;
       gameActive = false;
       return;
     }
 
     if (isDraw()) {
-      messageDiv.textContent = "It's a draw!";
+      document.querySelector('.message').textContent = `It's a draw!`;
       gameActive = false;
       return;
     }
 
-    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-    messageDiv.textContent = `${players[currentPlayer]}, you're up`;
+    currentPlayer = currentPlayer === 'x' ? 'o' : 'x';
+    document.querySelector('.message').textContent = `${players[currentPlayer]}, you're up`;
   });
 });
 
-function checkWin() {
-  const winCombos = [
+function checkWinner() {
+  const winPatterns = [
     [1,2,3], [4,5,6], [7,8,9],
     [1,4,7], [2,5,8], [3,6,9],
     [1,5,9], [3,5,7]
   ];
 
-  return winCombos.some(combo => {
-    const [a, b, c] = combo;
+  return winPatterns.some(pattern => {
+    const [a, b, c] = pattern;
     return (
-      document.getElementById(a.toString()).textContent === currentPlayer &&
-      document.getElementById(b.toString()).textContent === currentPlayer &&
-      document.getElementById(c.toString()).textContent === currentPlayer
+      document.getElementById(String(a)).textContent === currentPlayer &&
+      document.getElementById(String(b)).textContent === currentPlayer &&
+      document.getElementById(String(c)).textContent === currentPlayer
     );
   });
 }
 
 function isDraw() {
-  return cells.every(cell => cell.textContent !== '');
+  return [...cells].every(cell => cell.textContent !== '');
 }

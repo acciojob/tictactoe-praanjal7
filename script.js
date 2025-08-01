@@ -1,56 +1,100 @@
-const submitBtn = document.getElementById("submit");
-const player1Input = document.getElementById("player1");
-const player2Input = document.getElementById("player2");
-const gameSection = document.getElementById("game-section");
-const message = document.querySelector(".message");
-const cells = document.querySelectorAll(".cell");
-
-let currentPlayer = "X";
-let player1 = "";
-let player2 = "";
-let gameActive = true;
-
-submitBtn.onclick = function () {
-  player1 = player1Input.value.trim();
-  player2 = player2Input.value.trim();
-
-  if (player1 && player2) {
-    document.getElementById("input-section").style.display = "none";
-    gameSection.style.display = "block";
-    message.textContent = `${player1}, you're up`;
-  } else {
-    alert("Please enter names for both players.");
-  }
-};
-
-cells.forEach(cell => {
-  cell.addEventListener("click", () => {
-    if (!gameActive || cell.textContent !== "") return;
-
-    cell.textContent = currentPlayer;
-
-    if (checkWinner()) {
-      const winner = currentPlayer === "X" ? player1 : player2;
-      message.textContent = `${winner}, congratulations you won!`;
-      gameActive = false;
-      return;
-    }
-
-    currentPlayer = currentPlayer === "X" ? "O" : "X";
-    const currentName = currentPlayer === "X" ? player1 : player2;
-    message.textContent = `${currentName}, you're up`;
-  });
-});
-
-function checkWinner() {
-  const winPatterns = [
-    [1, 2, 3], [4, 5, 6], [7, 8, 9], // Rows
-    [1, 4, 7], [2, 5, 8], [3, 6, 9], // Columns
-    [1, 5, 9], [3, 5, 7]             // Diagonals
-  ];
-
-  return winPatterns.some(pattern => {
-    const [a, b, c] = pattern.map(id => document.getElementById(id).textContent);
-    return a && a === b && b === c;
-  });
-}
+document.addEventListener('DOMContentLoaded', function() {
+            const inputSection = document.getElementById('input-section');
+            const gameSection = document.getElementById('game-section');
+            const messageDiv = document.getElementById('message');
+            const board = document.getElementById('board');
+            const submitBtn = document.getElementById('submit');
+            
+            let player1 = '';
+            let player2 = '';
+            let currentPlayer = 'X';
+            let gameActive = true;
+            let gameState = ['', '', '', '', '', '', '', '', ''];
+            
+            const winningConditions = [
+                [0, 1, 2], // top row
+                [3, 4, 5], // middle row
+                [6, 7, 8], // bottom row
+                [0, 3, 6], // left column
+                [1, 4, 7], // middle column
+                [2, 5, 8], // right column
+                [0, 4, 8], // diagonal top-left to bottom-right
+                [2, 4, 6]  // diagonal top-right to bottom-left
+            ];
+            
+            submitBtn.addEventListener('click', startGame);
+            
+            function startGame() {
+                player1 = document.getElementById('player-1').value || 'Player 1';
+                player2 = document.getElementById('player-2').value || 'Player 2';
+                
+                inputSection.classList.add('hidden');
+                gameSection.classList.remove('hidden');
+                
+                updateMessage();
+                
+                // Add event listeners to each cell
+                document.querySelectorAll('.cell').forEach(cell => {
+                    cell.addEventListener('click', cellClicked);
+                });
+            }
+            
+            function cellClicked(e) {
+                const clickedCell = e.target;
+                const clickedCellIndex = parseInt(clickedCell.id) - 1;
+                
+                // If cell is already filled or game is not active, ignore the click
+                if (gameState[clickedCellIndex] !== '' || !gameActive) {
+                    return;
+                }
+                
+                // Update game state and UI
+                gameState[clickedCellIndex] = currentPlayer;
+                clickedCell.textContent = currentPlayer;
+                
+                // Check for win or draw
+                checkResult();
+            }
+            
+            function checkResult() {
+                let roundWon = false;
+                
+                // Check all winning conditions
+                for (let i = 0; i < winningConditions.length; i++) {
+                    const [a, b, c] = winningConditions[i];
+                    
+                    if (gameState[a] === '' || gameState[b] === '' || gameState[c] === '') {
+                        continue;
+                    }
+                    
+                    if (gameState[a] === gameState[b] && gameState[b] === gameState[c]) {
+                        roundWon = true;
+                        break;
+                    }
+                }
+                
+                if (roundWon) {
+                    const winner = currentPlayer === 'X' ? player1 : player2;
+                    messageDiv.textContent = `${winner}, congratulations you won!`;
+                    gameActive = false;
+                    return;
+                }
+                
+                // Check for draw
+                if (!gameState.includes('')) {
+                    messageDiv.textContent = "Game ended in a draw!";
+                    gameActive = false;
+                    return;
+                }
+                
+                // Switch player
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                updateMessage();
+            }
+            
+            function updateMessage() {
+                const currentPlayerName = currentPlayer === 'X' ? player1 : player2;
+                messageDiv.textContent = `${currentPlayerName}, you're up!`;
+            }
+        });
+    </script>
